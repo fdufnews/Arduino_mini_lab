@@ -8,11 +8,11 @@ I have written a small library that inherit from UTFT in order to have a little 
 I have added to UTFT a few method to init the display, read the buttons and the joystick, display battery state
 
 ## Components
-[TFT display](Doc/Components/small/IPS-0-96-pouce-7-p-SPI-HD-65-k-Couleur-1.jpg)
-[Battery charger](Doc/Components/mall/sku_219454_1.jpg)
-[FTDI tool]((Doc/Components/mall/criusFTDI1.jpg)
-[Joystick](Doc/Components/mall/mini-joystick-slide-analogiqueXY.jpg)
-[Tactile switch](Doc/Components/mall/tactileSwitches.jpg)
+![TFT display](Doc/Components/small/IPS-0-96-pouce-7-p-SPI-HD-65-k-Couleur-1.jpg)
+![Battery charger](Doc/Components/mall/sku_219454_1.jpg)
+![FTDI tool](Doc/Components/mall/criusFTDI1.jpg)
+![Joystick](Doc/Components/mall/mini-joystick-slide-analogiqueXY.jpg)
+![Tactile switch](Doc/Components/mall/tactileSwitches.jpg)
 
 ## Details
 Test_miniArduino is a test software that only uses UTFT library it was used to test the board before the library was created.
