@@ -1,7 +1,7 @@
 # Arduino_mini_lab
 
 ## What it is
-Small development/test platform using of the shelves items that were lying in my drawers.
+Small development/test platform using of the shelves items that were lying in my desk.
 There is an Arduino mini pro, an 80x160 TFT display some buttons, a joystick, a battery charger and an FTDI tool
 
 I have written a small library that inherit from UTFT in order to have a little GUI for rapid prototyping.
