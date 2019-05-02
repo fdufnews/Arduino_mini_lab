@@ -9,10 +9,10 @@ I have added to UTFT a few method to init the display, read the buttons and the 
 
 ## Components
 ![TFT display](Doc/Components/small/IPS-0-96-pouce-7-p-SPI-HD-65-k-Couleur-1.jpg)
-![Battery charger](Doc/Components/mall/sku_219454_1.jpg)
-![FTDI tool](Doc/Components/mall/criusFTDI1.jpg)
-![Joystick](Doc/Components/mall/mini-joystick-slide-analogiqueXY.jpg)
-![Tactile switch](Doc/Components/mall/tactileSwitches.jpg)
+![Battery charger](Doc/Components/small/sku_219454_1.jpg)
+![FTDI tool](Doc/Components/small/criusFTDI1.jpg)
+![Joystick](Doc/Components/small/mini-joystick-slide-analogiqueXY.jpg)
+![Tactile switch](Doc/Components/small/tactileSwitches.jpg)
 
 ## Details
 Test_miniArduino is a test software that only uses UTFT library it was used to test the board before the library was created.
