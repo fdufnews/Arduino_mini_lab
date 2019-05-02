@@ -7,6 +7,12 @@ There is an Arduino mini pro, an 80x160 TFT display some buttons, a joystick, a 
 I have written a small library that inherit from UTFT in order to have a little GUI for rapid prototyping.
 I have added to UTFT a few method to init the display, read the buttons and the joystick, display battery state
 
+## Components
+### TFT display
+[TFT display](Doc/IPS-0-96-pouce-7-p-SPI-HD-65-k-Couleur-1.jpg)
+### Battery Charge
+[Battery charger](Doc/sku_219454_1.jpg)
+
 ## Details
 Test_miniArduino is a test software that only uses UTFT library it was used to test the board before the library was created.
 Test_Arduino_mini_lab demonstrates what the library can do.
