@@ -9,9 +9,9 @@ I have added to UTFT a few method to init the display, read the buttons and the 
 
 ## Components
 ### TFT display
-[TFT display](Doc/IPS-0-96-pouce-7-p-SPI-HD-65-k-Couleur-1.jpg)
+[TFT display](Doc/Components/IPS-0-96-pouce-7-p-SPI-HD-65-k-Couleur-1.jpg)
 ### Battery Charge
-[Battery charger](Doc/sku_219454_1.jpg)
+[Battery charger](Doc/Components/sku_219454_1.jpg)
 
 ## Details
 Test_miniArduino is a test software that only uses UTFT library it was used to test the board before the library was created.
