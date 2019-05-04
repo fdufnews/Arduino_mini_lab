@@ -16,16 +16,8 @@ Small 80x160 OLED display with a ST7735 driver
 ![Battery charger](Doc/Components/small/sku_219454_1.jpg)
 TP4056 based LiIon battery charger
 
-![FTDI tool](Doc/Components/small/criusFTDI1.jpg)
-Well an little board with an FTDI232, no more to say
-
-![Joystick](Doc/Components/small/mini-joystick-slide-analogiqueXY.jpg)
-![Tactile switch](Doc/Components/small/tactileSwitches.jpg)
-
 The battery charger may need to be modified depending on the capacity of the battery used.
-
 By default this board is configured to generate a 1A current which can be to high for small batteries.
-
 To do so, a resistor need to be changed. The resistor is R3 on the second picture. The value of the resistor can be computed using the following formula:
 
 R3 = 1200/I
@@ -35,6 +27,13 @@ I is charging current in A
 1200Ohms for 1A
 
 2400Ohms for 0.5A
+
+
+![FTDI tool](Doc/Components/small/criusFTDI1.jpg)
+Well an little board with an FTDI232, no more to say
+
+![Joystick](Doc/Components/small/mini-joystick-slide-analogiqueXY.jpg)
+![Tactile switch](Doc/Components/small/tactileSwitches.jpg)
 
 ## Software details
 Test_miniArduino is a test software that only uses UTFT library it was used to test the board before the library was created.
