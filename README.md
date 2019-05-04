@@ -10,15 +10,15 @@ I have written a small library that inherit from UTFT in order to have a little 
 I have added to UTFT a few method to init the display, read the buttons and the joystick, display battery state
 
 ## Components
-![TFT display](Doc/Components/small/IPS-0-96-pouce-7-p-SPI-HD-65-k-Couleur-1.jpg)
-Small 80x160 OLED display with a ST7735 driver
 
-![Battery charger](Doc/Components/small/sku_219454_1.jpg)
+| ![TFT display](Doc/Components/small/IPS-0-96-pouce-7-p-SPI-HD-65-k-Couleur-1.jpg) | 
+Small 80x160 OLED display with a ST7735 driver |
+| ![Battery charger](Doc/Components/small/sku_219454_1.jpg) | 
 TP4056 based LiIon battery charger
 
 The battery charger may need to be modified depending on the capacity of the battery used.
-By default this board is configured to generate a 1A current which can be to high for small batteries.
-To do so, a resistor need to be changed. The resistor is R3 on the picture. The value of the resistor can be computed using the following formula:
+By default this board is configured to generate a 1A current which can be too high for small batteries.
+To do so, a resistor need to be changed. The resistor is R3 on the picture, connecting to pin2 of TP4056. The value of the resistor can be computed using the following formula:
 
 R3 = 1200/I
 
@@ -26,13 +26,12 @@ I is charging current in A
 
 1200Ohms for 1A
 
-2400Ohms for 0.5A
+2400Ohms for 0.5A |
+| ![FTDI tool](Doc/Components/small/criusFTDI1.jpg) | 
+Well a little board with an FTDI232, no more to say |
 
-
-![FTDI tool](Doc/Components/small/criusFTDI1.jpg) Well a little board with an FTDI232, no more to say
-
-![Joystick](Doc/Components/small/mini-joystick-slide-analogiqueXY.jpg)
-![Tactile switch](Doc/Components/small/tactileSwitches.jpg)
+| ![Joystick](Doc/Components/small/mini-joystick-slide-analogiqueXY.jpg) | 
+![Tactile switch](Doc/Components/small/tactileSwitches.jpg) |
 
 ## Software details
 Test_miniArduino is a test software that only uses UTFT library it was used to test the board before the library was created.
