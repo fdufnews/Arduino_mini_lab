@@ -3,6 +3,7 @@
 ## What it is
 Small development/test platform using of the shelves items that were lying in my desk.
 There is an Arduino mini pro, an 80x160 TFT display some buttons, a joystick, a battery charger and an FTDI tool
+![TFT display](Doc/IMG_20190503_123659_small.jpg)
 
 I have written a small library that inherit from UTFT in order to have a little GUI for rapid prototyping.
 I have added to UTFT a few method to init the display, read the buttons and the joystick, display battery state
@@ -27,8 +28,15 @@ Test_miniArduino is a test software that only uses UTFT library it was used to t
 Test_Arduino_mini_lab demonstrates what the library can do.
 
 ## Library
-A structure is defined to handle joystick information
-Some methods are added to UTFT existing ones. Their the names are self explanatory and the code is commented.
+### Library installation
+The content of the Library directory should be copied into the "libraries" directory of your sketchbook.
+
+### Library details
+A structure is defined to handle joystick information.
+For each axis the software can use:
+* the raw value (result of the analogRead). The poor quality of the joystick limits the value to the range from 200 to 800 which makes it difficult to use.
+* or a centered value which is a signed value with 0 as the center position of the joystick. The range goes from -255 to 255.
+* up and down are true when the centered positon of the joystick is higher than 255 or lower than -255
 
 ```
 struct joystick{
@@ -38,8 +46,11 @@ struct joystick{
     bool        up;         // when value > 255
     bool        down;       // when value < 255
 };
+```
 
+Some methods are added to the ones inherited from UTFT. Concerning the UTFT usage informations are located in the doc files of the UTFT library. For the added method, their names are self explanatory and the code is commented.
 
+```
 class MiniArduino : public UTFT {
     public:
         MiniArduino(void);
