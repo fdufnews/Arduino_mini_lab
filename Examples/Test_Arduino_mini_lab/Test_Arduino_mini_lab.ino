@@ -110,10 +110,10 @@ void setup(void) {
 
 void showButtonState(uint8_t line) {
     myMini.setColor(VGA_GREEN);
-    myMini.print(myMini.buttonState(GREEN_BUTTON) ? F("Closed") : F("Open  "), 20, line);
+    myMini.print(myMini.buttonState(GREEN_BUTTON) ? F("1") : F("0"), 120, line);
 
     myMini.setColor(VGA_RED);
-    myMini.print(myMini.buttonState(RED_BUTTON) ? F("Closed") : F("Open  "), 100, line);
+    myMini.print(myMini.buttonState(RED_BUTTON) ? F("1") : F("0"), 140, line);
 }
 
 void textBatteryState(uint8_t pos, uint8_t line) {
@@ -138,12 +138,29 @@ void showJoystick(uint8_t line) {
     myMini.print(myMini.YAxis.up ? F("UP  ") : myMini.YAxis.down ? F("DOWN") : F("    "), 100, line + 40);
 }
 
+
+void gauge(uint8_t x, uint8_t y, uint8_t val, uint8_t minVal, uint8_t maxVal, uint8_t len, uint8_t step1, uint8_t step2){
+    static uint8_t pos=0;
+    myMini.setColor(VGA_BLACK);
+    myMini.drawLine(x+pos, y, x+pos, y+4);
+    myMini.setColor(VGA_WHITE);
+    myMini.drawLine(x, y+5, x+len, y+5);
+    for(uint8_t i=0; i<len+1; i+=step1){
+        if (i%step2==0)
+            myMini.drawLine(x+i, y+4, x+i, y+8);
+        else
+            myMini.drawLine(x+i, y+4, x+i, y+6);
+    }
+    pos = map(val, minVal, maxVal, 0, len);
+    myMini.setColor(VGA_RED);
+    myMini.drawLine(x+pos, y, x+pos, y+4);
+}
 void loop(void) {
 
     showButtonState(0);
 
     if ( (millis() - timeReadBat) > delayReadBat) {
-        textBatteryState(20, 10);
+        //textBatteryState(20, 10);
         myMini.drawBatteryState(130, 12,BAT_HORIZ);
         myMini.drawBatteryState(77, 30,BAT_VERT);
         timeReadBat = millis();
@@ -151,6 +168,10 @@ void loop(void) {
 
     myMini.refreshJoysticks();
     showJoystick(20);
+    int16_t val= map(myMini.XAxis.centered,-255,255,0,255);
+    myMini.printNumI(val, 80, 10, 3, '0');
+    //gauge(10,10,val,0,255,50,5,25);
+    gauge(10,10,val,0,255,64,8,32);
     delay(50);
 }
 
