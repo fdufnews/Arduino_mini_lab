@@ -41,7 +41,7 @@ void drawCrosshair(int x, int y, int w, int h) {
     myMini.drawLine(x, y0, x, y1);
 }
 
-void rotatingCrosshair(int x, int y, int w, int timeStep) {
+void rotatingCrosshair(int x, int y, int w) {
     static uint8_t stepNum = 0;
     uint8_t x0, x1, y0, y1, x2, x3, y2, y3;
     uint16_t color;
@@ -58,7 +58,6 @@ void rotatingCrosshair(int x, int y, int w, int timeStep) {
         myMini.drawLine(x2, y2, x3, y3);
         myMini.drawLine(x2, y3, x3, y2);
     }
-    delay(timeStep);
     myMini.setColor(myMini.getBackColor());
     if (stepNum) {
         myMini.drawLine(x0, y, x1, y);
@@ -99,8 +98,9 @@ void setup(void) {
     drawCrosshair(MINX + 20, MAXY - 20, 10, 7);
 
     myMini.setColor(VGA_GREEN); // foreground color
-    for (uint8_t iter = 0; iter < 20; iter++) {
-        rotatingCrosshair(MAXX / 2, 20, 10, 200);
+    for (uint8_t iter = 0; iter < 10; iter++) {
+        rotatingCrosshair(MAXX / 2, 20, 10);
+        delay(200);
     }
     delay(1000);
 
@@ -155,12 +155,12 @@ void gauge(uint8_t x, uint8_t y, uint8_t val, uint8_t minVal, uint8_t maxVal, ui
     myMini.setColor(VGA_RED);
     myMini.drawLine(x+pos, y, x+pos, y+4);
 }
+
 void loop(void) {
 
     showButtonState(0);
 
     if ( (millis() - timeReadBat) > delayReadBat) {
-        //textBatteryState(20, 10);
         myMini.drawBatteryState(130, 12,BAT_HORIZ);
         myMini.drawBatteryState(77, 30,BAT_VERT);
         timeReadBat = millis();
