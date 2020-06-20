@@ -1,5 +1,5 @@
 /*
-	ArduinoMiniLab
+	MiniArduino
 	library for Arduino Mini Lab plateform
 */
 
@@ -62,12 +62,15 @@ class MiniArduino : public UTFT {
         void begin(void);
         void setInternalRefValue(uint16_t ref);
         uint32_t getBattery(void);
+        void textBatteryState(uint8_t pos, uint8_t line);
         void calibrateJoystick(void);
         void refreshJoysticks(void);
         bool buttonState(uint8_t button);
         void setBacklight(uint8_t level);
         uint8_t getBacklight(void);
         void drawBatteryState(uint8_t pos, uint8_t line, bool orientation);
+        void drawCrosshair(uint8_t x, uint8_t y, uint8_t w, uint8_t h);
+        void gauge(uint8_t x, uint8_t y, uint8_t val, uint8_t minVal, uint8_t maxVal, uint8_t len, uint8_t step1, uint8_t step2, uint8_t forceRedraw);
         struct joystick    XAxis, YAxis;
         
     protected:
@@ -77,5 +80,7 @@ class MiniArduino : public UTFT {
         uint32_t    internalRef = DEFAULT_REF * 1023UL; // internal reference value in mV
         uint16_t    battery;
         uint8_t     backlight = 255; // backlight level
+        uint8_t     maxx, minx;
+        uint8_t     maxy, miny;
 };
 #endif

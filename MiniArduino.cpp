@@ -5,7 +5,7 @@
 
 #include <UTFT.h>
 #include <digitalWriteFast.h>
-#include <ArduinoMiniLab.h>
+#include <MiniArduino.h>
 
 extern uint8_t SmallFont[];
 
@@ -32,6 +32,8 @@ void MiniArduino::begin(void){
     InitLCD(LANDSCAPE); // init display and sets orientation
     setFont(SmallFont); // declare the font we will use
     setOffsetXY(24,0);    // set the offset for the 80x160 TFT display with Red tab
+    maxx = getDisplayXSize();
+    maxy = getDisplayYSize();
     pinMode(PIN_BLK,OUTPUT); // pinBLK pin drives display backlight
     analogWrite(PIN_BLK,backlight); // full on
 
@@ -51,7 +53,7 @@ void MiniArduino::begin(void){
     VCC      1023
     
     input:
-            long reference value in microvolts
+            long reference value in millivolts
     output:
             nothing
 */
@@ -86,6 +88,68 @@ uint32_t MiniArduino::getBattery(void){
     ADMUX = sav_reg;              // restore previous ADC configuration
     return result;
 }
+
+/* textBatteryState
+    print the voltage of the battery with this format x.xV
+    
+    input:
+            uint8_t pos: position along x axis
+            uint8_t line : position along y axis
+            
+    output:
+            nothing
+
+*/
+void MiniArduino::textBatteryState(uint8_t pos, uint8_t line) {
+    unsigned int batVal = getBattery()/100; // getBatvoltage (in mV)
+    printNumI(batVal/10, pos, line);
+    print(".", pos + FONTWIDTH, line);
+    printNumI(batVal%10, pos + 2 * FONTWIDTH, line);
+    print("V", pos + 3 * FONTWIDTH, line);
+}
+
+/* drawBatteryState
+    Draws a battery symbol with the inside indicating battery level
+    level is coded both by the color and the size of the filling
+    
+    input:
+            uint8_t pos : X coordinate of top left the symbol
+            uint8_t pos : Y coordinate of top left the symbol
+            bool orientation : draws the battery horizontal or vertical using either one of BAT_HORIZ or BAT_VERT
+    output:
+            nothing
+*/
+void MiniArduino::drawBatteryState(uint8_t pos, uint8_t line, bool orientation) {
+    // define a colormap for battery state from red for 0 to green for 10
+    // colors are coded {RED, GREEN} in the table
+    uint8_t const colorMap[11][2] = {{255,0},{200,16},{192,32},{160,64},{128,128},{128,128},{64,160},{64,160},{32,192},{16,200},{0,255}};
+    long batVal = getBattery(); // get battery voltage (in mV)
+    uint16_t level;
+    // constrain and map level in the 0 to 10 range
+    level = constrain(batVal, MIN_BAT, MAX_BAT );
+    level = map(level, MIN_BAT, MAX_BAT, 0, 10);
+
+    if (orientation == BAT_HORIZ){
+        setColor(VGA_WHITE);
+        // draw battery
+        fillRect(pos, line+2, pos+2, line+5);  // Draw battery tip
+        drawRect(pos+2, line, pos+16, line+7);  // Draw battery contour
+        setColor(VGA_BLACK);
+        fillRect(pos+3, line+1, pos+15, line+6);  // Erase battery interior
+        setColor(colorMap[level][0], colorMap[level][1], 0); // set color using colorMap
+        fillRect(pos+14 - level, line+2, pos+14, line+5); // Draw battery level
+    } else {
+        setColor(VGA_WHITE);
+        // draw battery
+        fillRect(pos+2, line, pos+5, line+2);  // Draw battery tip
+        drawRect(pos, line+2, pos+7, line+16);  // Draw battery contour
+        setColor(VGA_BLACK);
+        fillRect(pos+1, line+3, pos+6, line+15);  // Erase battery interior
+        setColor(colorMap[level][0], colorMap[level][1], 0); // set color using colorMap
+        fillRect(pos+2, line+14 - level, pos+5, line+14); // Draw battery level
+    }
+}
+
 
 /* calibrateJoystick
     Find value of both axis of joystick while in rest position
@@ -212,46 +276,71 @@ uint8_t MiniArduino::getBacklight(void){
     return backlight;
 }
 
-/* drawBatteryState
-    Draws a battery symbol with the inside indicating battery level
-    level is coded both by the color and the size of the filling
+/* drawCrosshair
+    Draws a crosshair with the current foreground color
     
     input:
-            uint8_t pos : X coordinate of top left the symbol
-            uint8_t pos : Y coordinate of top left the symbol
-            bool orientation : draws the battery horizontal or vertical using either one of BAT_HORIZ or BAT_VERT
-    output:
+            uint8_t x, uint8_t y : coordinate of the center of the crosshair
+            uint8_t w, uint8_t h : width and height of the branches of the crosshair
+            The crosshair is twice the width and the height given by the arguments
+        
+    ouput:
             nothing
-*/
-void MiniArduino::drawBatteryState(uint8_t pos, uint8_t line, bool orientation) {
-    // define a colormap for battery state from red for 0 to green for 10
-    // colors are coded {RED, GREEN} in the table
-    uint8_t const colorMap[11][2] = {{255,0},{200,16},{192,32},{160,64},{128,128},{128,128},{64,160},{64,160},{32,192},{16,200},{0,255}};
-    long batVal = getBattery(); // get battery voltage (in mV)
-    uint16_t level;
-    // constrain and map level in the 0 to 10 range
-    level = constrain(batVal, MIN_BAT, MAX_BAT );
-    level = map(level, MIN_BAT, MAX_BAT, 0, 10);
 
-    if (orientation == BAT_HORIZ){
-        setColor(VGA_WHITE);
-        // draw battery
-        fillRect(pos, line+2, pos+2, line+5);  // Draw battery tip
-        drawRect(pos+2, line, pos+16, line+7);  // Draw battery contour
-        setColor(VGA_BLACK);
-        fillRect(pos+3, line+1, pos+15, line+6);  // Erase battery interior
-        setColor(colorMap[level][0], colorMap[level][1], 0); // set color using colorMap
-        fillRect(pos+14 - level, line+2, pos+14, line+5); // Draw battery level
-    } else {
-        setColor(VGA_WHITE);
-        // draw battery
-        fillRect(pos+2, line, pos+5, line+2);  // Draw battery tip
-        drawRect(pos, line+2, pos+7, line+16);  // Draw battery contour
-        setColor(VGA_BLACK);
-        fillRect(pos+1, line+3, pos+6, line+15);  // Erase battery interior
-        setColor(colorMap[level][0], colorMap[level][1], 0); // set color using colorMap
-        fillRect(pos+2, line+14 - level, pos+5, line+14); // Draw battery level
-    }
+*/
+void MiniArduino::drawCrosshair(uint8_t x, uint8_t y, uint8_t w, uint8_t h) {
+    uint8_t x0, y0, x1, y1;
+    x0 = x - w;
+    x1 = x + w;
+    y0 = y - h;
+    y1 = y + h;
+    if (x0 < minx) x0 = minx;
+    if (x1 > maxx) x1 = maxx;
+    if (y0 < miny) y0 = miny;
+    if (y1 > maxy) y1 = maxy;
+    drawLine(x0, y, x1, y);
+    drawLine(x, y0, x, y1);
 }
 
+/* gauge
+    Draws an axis with divisions put a cursor on it
+    overall size is len along X axis and 6 along Y axis
+    smaller divisions are 1 pixel apart the X axis
+    larger division are ! pixel over X axis and 3 pixels under
+    Cursor is 
+    
+    intput:
+            uint8_t x       : X coordinate of top left the symbol
+            uint8_t y       : Y coordinate of top left the symbol
+            uint8_t val     : value to map on the axis
+            uint8_t minVal  : minimum value val can reach
+            uint8_t maxVal  : maximum value val can reach
+            uint8_t len     : length of the axis
+            uint8_t step1   : smaller division on axis
+            uint8_t step2   : larger division on axis step2 shall a multiple of step1
+            boolean forceRedraw : force redrawing the axis if true
+
+*/
+void MiniArduino::gauge(uint8_t x, uint8_t y, uint8_t val, uint8_t minVal, uint8_t maxVal, uint8_t len, uint8_t step1, uint8_t step2, uint8_t forceRedraw){
+    static uint8_t pos=0; // cursor position
+    setColor(VGA_BLACK);
+    drawLine(x+pos, y, x+pos, y+3);    // erase cursor at current position
+    drawLine(x+pos-1, y, x+pos-1, y+1);
+    drawLine(x+pos+1, y, x+pos+1, y+1);
+    if(forceRedraw){
+        setColor(VGA_WHITE);
+        drawLine(x, y+5, x+len, y+5);  // draws x axis
+        for(uint8_t i=0; i<len+1; i+=step1){  // draws a marker every step1
+            if (i%step2==0)
+                drawLine(x+i, y+4, x+i, y+8);   // draws a large marker every step2
+            else
+                drawLine(x+i, y+4, x+i, y+6);
+        }
+    }
+    pos = map(val, minVal, maxVal, 0, len);
+    setColor(VGA_RED);
+    drawLine(x+pos, y, x+pos, y+3);
+    drawLine(x+pos-1, y, x+pos-1, y+1);
+    drawLine(x+pos+1, y, x+pos+1, y+1);
+}
 

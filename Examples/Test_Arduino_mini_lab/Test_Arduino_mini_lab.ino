@@ -1,5 +1,5 @@
 #include <UTFT.h>
-#include <ArduinoMiniLab.h>
+#include <MiniArduino.h>
 
 /* Test_Arduino_mini_lab
     //
@@ -10,7 +10,7 @@
     //      an analog joystick
     //
     //
-    // This program requires the ArduinoMiniLab library.
+    // This program requires the MiniArduino library.
 */
 
 // size of display
@@ -27,37 +27,16 @@ unsigned long delayReadBat = 10000L;
 MiniArduino myMini = MiniArduino();
 
 
-void drawCrosshair(int x, int y, int w, int h) {
-    uint8_t x0, y0, x1, y1;
-    x0 = x - w;
-    x1 = x + w;
-    y0 = y - h;
-    y1 = y + h;
-    if (x0 < MINX) x0 = MINX;
-    if (x1 > MAXX) x1 = MAXX;
-    if (y0 < MINY) y0 = MINY;
-    if (y1 > MAXY) y1 = MAXY;
-    myMini.drawLine(x0, y, x1, y);
-    myMini.drawLine(x, y0, x, y1);
-}
-
 void rotatingCrosshair(int x, int y, int w) {
     static uint8_t stepNum = 0;
     uint8_t x0, x1, y0, y1, x2, x3, y2, y3;
     uint16_t color;
 
-    color = myMini.getColor();
     x0 = x - w; x2 = x - (w - w / 4);
     x1 = x + w; x3 = x + (w - w / 4);
     y0 = y - w; y2 = y - (w - w / 4);
     y1 = y + w; y3 = y + (w - w / 4);
-    if (stepNum) {
-        myMini.drawLine(x0, y, x1, y);
-        myMini.drawLine(x, y0, x, y1);
-    } else {
-        myMini.drawLine(x2, y2, x3, y3);
-        myMini.drawLine(x2, y3, x3, y2);
-    }
+    color = myMini.getColor();
     myMini.setColor(myMini.getBackColor());
     if (stepNum) {
         myMini.drawLine(x0, y, x1, y);
@@ -66,8 +45,16 @@ void rotatingCrosshair(int x, int y, int w) {
         myMini.drawLine(x2, y2, x3, y3);
         myMini.drawLine(x2, y3, x3, y2);
     }
+    
     stepNum = (stepNum + 1) % 2;
     myMini.setColor(color);
+    if (stepNum) {
+        myMini.drawLine(x0, y, x1, y);
+        myMini.drawLine(x, y0, x, y1);
+    } else {
+        myMini.drawLine(x2, y2, x3, y3);
+        myMini.drawLine(x2, y3, x3, y2);
+    }
 }
 
 // about
@@ -89,13 +76,13 @@ void setup(void) {
     MAXY = myMini.getDisplayYSize() - 1;
     about();
     myMini.setColor(VGA_AQUA); // foreground color
-    drawCrosshair(MINX + 20, MINY + 20, 10, 7);
+    myMini.drawCrosshair(MINX + 20, MINY + 20, 10, 7);
     myMini.setColor(VGA_FUCHSIA); // foreground color
-    drawCrosshair(MAXX - 20, MAXY - 20, 10, 7);
+    myMini.drawCrosshair(MAXX - 20, MAXY - 20, 10, 7);
     myMini.setColor(VGA_YELLOW); // foreground color
-    drawCrosshair(MAXX - 20, MINY + 20, 10, 7);
+    myMini.drawCrosshair(MAXX - 20, MINY + 20, 10, 7);
     myMini.setColor(VGA_SILVER); // foreground color
-    drawCrosshair(MINX + 20, MAXY - 20, 10, 7);
+    myMini.drawCrosshair(MINX + 20, MAXY - 20, 10, 7);
 
     myMini.setColor(VGA_GREEN); // foreground color
     for (uint8_t iter = 0; iter < 10; iter++) {
@@ -116,13 +103,6 @@ void showButtonState(uint8_t line) {
     myMini.print(myMini.buttonState(RED_BUTTON) ? F("1") : F("0"), 140, line);
 }
 
-void textBatteryState(uint8_t pos, uint8_t line) {
-    long batVal = myMini.getBattery(); // getBatvoltage (in mV)
-    myMini.setColor(VGA_WHITE);
-    myMini.print(F("Batt.:"), pos, line);
-    myMini.printNumI(batVal, pos+60, line);
-}
-
 void showJoystick(uint8_t line) {
     myMini.setColor(VGA_WHITE);
     myMini.print(F("X"), 40, line);
@@ -139,23 +119,6 @@ void showJoystick(uint8_t line) {
 }
 
 
-void gauge(uint8_t x, uint8_t y, uint8_t val, uint8_t minVal, uint8_t maxVal, uint8_t len, uint8_t step1, uint8_t step2){
-    static uint8_t pos=0;
-    myMini.setColor(VGA_BLACK);
-    myMini.drawLine(x+pos, y, x+pos, y+4);
-    myMini.setColor(VGA_WHITE);
-    myMini.drawLine(x, y+5, x+len, y+5);
-    for(uint8_t i=0; i<len+1; i+=step1){
-        if (i%step2==0)
-            myMini.drawLine(x+i, y+4, x+i, y+8);
-        else
-            myMini.drawLine(x+i, y+4, x+i, y+6);
-    }
-    pos = map(val, minVal, maxVal, 0, len);
-    myMini.setColor(VGA_RED);
-    myMini.drawLine(x+pos, y, x+pos, y+4);
-}
-
 void loop(void) {
 
     showButtonState(0);
@@ -171,8 +134,6 @@ void loop(void) {
     int16_t val= map(myMini.XAxis.centered,-255,255,0,255);
     myMini.printNumI(val, 80, 10, 3, '0');
     //gauge(10,10,val,0,255,50,5,25);
-    gauge(10,10,val,0,255,64,8,32);
+    myMini.gauge(10,10,val,0,255,64,8,32, redraw);
     delay(50);
 }
-
-
