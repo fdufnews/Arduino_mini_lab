@@ -81,8 +81,6 @@ void setup(void) {
 
 void loop(void) {
 
-    showButtonState(70,40);
-    
     // update battery state every now and then
     if ( (millis() - timeReadBat) > delayReadBat) {
         myMini.setColor(VGA_WHITE);
